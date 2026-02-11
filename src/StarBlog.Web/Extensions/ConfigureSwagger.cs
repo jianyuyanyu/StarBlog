@@ -1,4 +1,4 @@
-﻿using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using StarBlog.Web.Models;
 using StarBlog.Web.Middlewares;
 using Swashbuckle.AspNetCore.Filters;
@@ -41,7 +41,10 @@ public static class ConfigureSwagger {
                 Type = SecuritySchemeType.ApiKey
             };
             options.AddSecurityDefinition("oauth2", security);
-            options.AddSecurityRequirement(new OpenApiSecurityRequirement { { security, new List<string>() } });
+            options.AddSecurityRequirement(doc => {
+                var securityRef = new OpenApiSecuritySchemeReference("oauth2", doc, string.Empty);
+                return new OpenApiSecurityRequirement { { securityRef, new List<string>() } };
+            });
             options.OperationFilter<AddResponseHeadersFilter>();
             options.OperationFilter<AppendAuthorizeToSummaryOperationFilter>();
             options.OperationFilter<SecurityRequirementsOperationFilter>();

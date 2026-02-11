@@ -1,4 +1,4 @@
-﻿using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 namespace StarBlog.Web.Models; 
 
@@ -22,7 +22,7 @@ public class SwaggerGroup {
     }
 
     /// <summary>
-    /// 生成 <see cref="Microsoft.OpenApi.Models.OpenApiInfo"/>
+    /// 生成 <see cref="Microsoft.OpenApi.OpenApiInfo"/>
     /// </summary>
     public OpenApiInfo ToOpenApiInfo(string version = "1.0") {
         var item = new OpenApiInfo();
