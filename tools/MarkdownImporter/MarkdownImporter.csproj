@@ -12,7 +12,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\StarBlog.Contrib\StarBlog.Contrib.csproj" />
         <ProjectReference Include="..\..\src\StarBlog.Data\StarBlog.Data.csproj" />
         <ProjectReference Include="..\..\src\StarBlog.Content\StarBlog.Content.csproj" />
     </ItemGroup>
