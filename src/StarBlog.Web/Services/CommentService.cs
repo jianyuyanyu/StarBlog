@@ -1,12 +1,15 @@
 using System.Net;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
 using CodeLab.Share.Extensions;
 using CodeLab.Share.ViewModels;
 using FreeSql;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using StarBlog.Data.Models;
 using StarBlog.Content.Utils;
+using StarBlog.Web.Services.OutboxServices;
 using StarBlog.Web.Criteria;
 using X.PagedList;
 
@@ -16,16 +19,23 @@ public class CommentService {
     private readonly ILogger<CommentService> _logger;
     private readonly IBaseRepository<Comment> _commentRepo;
     private readonly IBaseRepository<AnonymousUser> _anonymousRepo;
+    private readonly IBaseRepository<Post> _postRepo;
     private readonly IMemoryCache _memoryCache;
     private readonly EmailService _emailService;
+    private readonly OutboxService _outboxService;
+    private readonly IConfiguration _configuration;
 
     public CommentService(ILogger<CommentService> logger, IBaseRepository<Comment> commentRepo,
-        IBaseRepository<AnonymousUser> anonymousRepo, IMemoryCache memoryCache, EmailService emailService) {
+        IBaseRepository<AnonymousUser> anonymousRepo, IBaseRepository<Post> postRepo, IMemoryCache memoryCache, EmailService emailService,
+        OutboxService outboxService, IConfiguration configuration) {
         _logger = logger;
         _commentRepo = commentRepo;
         _anonymousRepo = anonymousRepo;
+        _postRepo = postRepo;
         _memoryCache = memoryCache;
         _emailService = emailService;
+        _outboxService = outboxService;
+        _configuration = configuration;
     }
 
     private List<Comment>? GetCommentsTree(List<Comment> commentsList, string? parentId = null) {
@@ -92,10 +102,16 @@ public class CommentService {
     }
 
     public async Task<Comment> Accept(Comment comment, string? reason = null) {
+        var wasNeedAudit = comment.IsNeedAudit;
+        var wasVisible = comment.Visible;
         comment.Visible = true;
         comment.IsNeedAudit = false;
         comment.Reason = reason;
         await _commentRepo.UpdateAsync(comment);
+
+        if (comment.ParentId != null && (wasNeedAudit || !wasVisible)) {
+            await EnqueueReplyNotificationIfNeededAsync(comment);
+        }
         return comment;
     }
 
@@ -169,5 +185,52 @@ public class CommentService {
     public async Task<Comment> Add(Comment comment) {
         comment.Id = GuidUtils.GuidTo16String();
         return await _commentRepo.InsertAsync(comment);
+    }
+
+    public async Task EnqueueReplyNotificationIfNeededAsync(Comment replyComment) {
+        if (replyComment.ParentId == null) return;
+        if (!replyComment.Visible) return;
+
+        if (string.IsNullOrWhiteSpace(replyComment.AnonymousUserId)) return;
+        var replier = await _anonymousRepo.Where(a => a.Id == replyComment.AnonymousUserId).FirstAsync();
+        if (replier == null) return;
+
+        var parent = await _commentRepo.Select
+            .Where(a => a.Id == replyComment.ParentId)
+            .Include(a => a.AnonymousUser)
+            .FirstAsync();
+        if (parent == null) return;
+        if (parent.AnonymousUser == null) return;
+        if (string.IsNullOrWhiteSpace(parent.AnonymousUser.Email)) return;
+
+        if (string.Equals(parent.AnonymousUserId, replyComment.AnonymousUserId, StringComparison.Ordinal)) return;
+        if (string.Equals(parent.AnonymousUser.Email, replier.Email, StringComparison.OrdinalIgnoreCase)) return;
+
+        var baseUrl = _configuration["host"] ?? "https://blog.deali.cn";
+        baseUrl = baseUrl.TrimEnd('/');
+
+        var post = await _postRepo.Where(a => a.Id == replyComment.PostId).FirstAsync();
+        var postUrl = post?.Slug != null
+            ? $"{baseUrl}/p/{Uri.EscapeDataString(post.Slug)}"
+            : $"{baseUrl}/Blog/Post/{Uri.EscapeDataString(replyComment.PostId)}";
+
+        var safePostTitle = HtmlEncoder.Default.Encode(post?.Title ?? replyComment.PostId);
+        var safeReplierName = HtmlEncoder.Default.Encode(replier.Name);
+        var safeReplyContent = HtmlEncoder.Default.Encode(replyComment.Content).Replace("\n", "<br>");
+
+        var subject = $"[StarBlog]你在《{safePostTitle}》下的评论收到了回复";
+        var body = new StringBuilder();
+        body.AppendLine($"<p>你好，{HtmlEncoder.Default.Encode(parent.AnonymousUser.Name)}：</p>");
+        body.AppendLine($"<p>你的评论收到了 <b>{safeReplierName}</b> 的回复：</p>");
+        body.AppendLine($"<blockquote style=\"margin:12px 0;padding:10px 12px;border-left:4px solid #ddd;background:#fafafa;\">{safeReplyContent}</blockquote>");
+        body.AppendLine($"<p>点击查看：<a href=\"{HtmlEncoder.Default.Encode(postUrl)}\">{HtmlEncoder.Default.Encode(postUrl)}</a></p>");
+
+        await _outboxService.EnqueueEmailAsync(
+            subject,
+            body.ToString(),
+            parent.AnonymousUser.Name,
+            parent.AnonymousUser.Email,
+            dedupKey: $"comment-reply:{replyComment.Id}"
+        );
     }
 }

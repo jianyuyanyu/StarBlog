@@ -1,8 +1,8 @@
 using FreeSql;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using StarBlog.Data;
 using StarBlog.Data.Models;
+using StarBlog.Data;
 using StarBlog.Web.Services.OutboxServices;
 
 var services = new ServiceCollection();
@@ -30,6 +30,7 @@ services.Configure<OutboxOptions>(options => {
 services.AddScoped<OutboxService>();
 services.AddScoped<OutboxProcessor>();
 services.AddScoped<IOutboxHandler, NoopOutboxHandler>();
+services.AddScoped<IOutboxHandler, AssertEmailHandler>();
 
 var serviceProvider = services.BuildServiceProvider();
 
@@ -62,5 +63,13 @@ file sealed class NoopOutboxHandler : IOutboxHandler {
 
     public Task HandleAsync(OutboxMessage message, CancellationToken cancellationToken) {
         return Task.CompletedTask;
+    }
+}
+
+file sealed class AssertEmailHandler : IOutboxHandler {
+    public string Type => OutboxTaskTypes.EmailSend;
+
+    public Task HandleAsync(OutboxMessage message, CancellationToken cancellationToken) {
+        throw new Exception("email.send should not be executed in smoke test");
     }
 }

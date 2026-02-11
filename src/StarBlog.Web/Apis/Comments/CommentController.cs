@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using CodeLab.Share.Contrib.StopWords;
 using CodeLab.Share.ViewModels.Response;
 using Microsoft.AspNetCore.Authorization;
@@ -99,6 +99,9 @@ public class CommentController : ControllerBase {
         }
 
         comment = await _commentService.Add(comment);
+        if (comment.ParentId != null && comment.Visible) {
+            await _commentService.EnqueueReplyNotificationIfNeededAsync(comment);
+        }
 
         return new ApiResponse<Comment>(comment) {
             Message = msg
