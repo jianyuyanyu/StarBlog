@@ -9,6 +9,7 @@ using StarBlog.Web.Extensions;
 using StarBlog.Web.Filters;
 using StarBlog.Web.Middlewares;
 using StarBlog.Web.Services;
+using StarBlog.Web.Services.EmailQueueServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -108,6 +109,8 @@ builder.Services.AddImageSharp();
 // 注册自定义服务
 builder.Services.AddSingleton<CommonService>();
 builder.Services.AddSingleton<EmailService>();
+builder.Services.AddSingleton<EmailSendQueueService>();
+builder.Services.AddHostedService<EmailSendWorker>();
 builder.Services.AddSingleton<MessageService>();
 builder.Services.AddSingleton<ThemeService>();
 builder.Services.AddSingleton<TempFilterService>();
