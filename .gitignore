@@ -11,6 +11,8 @@ app*.db*
 *.xdb
 *.min.css
 *.min.js
+.trae/documents
+
 
 .idea
 
