@@ -59,6 +59,9 @@ builder.Services.AddFreeSql(builder.Configuration);
 builder.Services.AddVisitRecord();
 builder.Services.AddHttpClient();
 
+// HealthChecks：提供 /health（汇总）、/health/live（存活）、/health/ready（就绪）端点
+builder.Services.AddStarBlogHealthChecks();
+
 // CORS：Next.js 前端跨域调用需要（带 Cookie/凭据时必须显式列出允许的 Origin）
 builder.Services.AddCors(options => {
     options.AddDefaultPolicy(policyBuilder => {
@@ -145,6 +148,8 @@ app.UseAuthorization();
 
 // Swagger UI 默认需要已认证用户才能访问（避免生产环境直接暴露文档）
 app.UseSwaggerPkg();
+
+app.MapStarBlogHealthChecks();
 
 app.MapControllers();
 
