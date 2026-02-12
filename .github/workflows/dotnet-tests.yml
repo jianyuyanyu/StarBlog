@@ -1,0 +1,31 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  dotnet-test:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore StarBlog.sln
+
+      - name: Test (with coverage)
+        run: dotnet test StarBlog.sln -c Release --collect:"XPlat Code Coverage" --settings tests/coverlet.runsettings --results-directory TestResults
+
+      - name: Upload TestResults
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TestResults
+          path: TestResults
+
