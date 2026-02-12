@@ -3,10 +3,10 @@ using CodeLab.Share.ViewModels.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StarBlog.Data.Models;
-using StarBlog.Api.Criteria;
+using StarBlog.Application.Criteria;
 using StarBlog.Api.Extensions;
-using StarBlog.Api.Services;
-using StarBlog.Api.ViewModels.Photography;
+using StarBlog.Application.Services;
+using StarBlog.Application.ViewModels.Photography;
 
 namespace StarBlog.Api.Apis.Photography;
 

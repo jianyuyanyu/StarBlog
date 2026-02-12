@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using StarBlog.Content.Utils;
 using StarBlog.Data.Models;
 using StarBlog.Api.Extensions;
-using StarBlog.Api.Services;
-using StarBlog.Api.ViewModels;
-using StarBlog.Api.ViewModels.Blog;
-using StarBlog.Api.Criteria;
+using StarBlog.Application.Services;
+using StarBlog.Application.ViewModels;
+using StarBlog.Application.ViewModels.Blog;
+using StarBlog.Application.Criteria;
 using X.PagedList;
 
 namespace StarBlog.Api.Apis.Blog;

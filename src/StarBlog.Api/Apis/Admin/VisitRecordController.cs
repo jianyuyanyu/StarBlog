@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StarBlog.Data.Models;
 using StarBlog.Api.Extensions;
-using StarBlog.Api.Services.VisitRecordServices;
-using StarBlog.Api.Criteria;
-using StarBlog.Api.ViewModels.VisitRecord;
+using StarBlog.Application.Services.VisitRecordServices;
+using StarBlog.Application.Criteria;
+using StarBlog.Application.ViewModels.VisitRecord;
 
 namespace StarBlog.Api.Apis.Admin;
 

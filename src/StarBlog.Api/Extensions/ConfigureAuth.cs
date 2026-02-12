@@ -1,8 +1,8 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using StarBlog.Api.Models.Config;
-using StarBlog.Api.Services;
+using StarBlog.Application.Models.Config;
+using StarBlog.Application.Services;
 
 namespace StarBlog.Api.Extensions; 
 

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StarBlog.Data.Models;
 using StarBlog.Api.Extensions;
-using StarBlog.Api.ViewModels;
+using StarBlog.Application.ViewModels;
 
 namespace StarBlog.Api.Apis.Blog;
 

@@ -14,6 +14,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\StarBlog.Application\StarBlog.Application.csproj" />
         <ProjectReference Include="..\StarBlog.Infrastructure\StarBlog.Infrastructure.csproj" />
         <ProjectReference Include="..\StarBlog.Data\StarBlog.Data.csproj" />
         <ProjectReference Include="..\StarBlog.Content\StarBlog.Content.csproj" />

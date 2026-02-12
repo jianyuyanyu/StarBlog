@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StarBlog.Data.Models;
 using StarBlog.Api.Extensions;
-using StarBlog.Api.Services;
-using StarBlog.Api.ViewModels.Comments;
-using StarBlog.Api.Criteria;
+using StarBlog.Application.Services;
+using StarBlog.Application.ViewModels.Comments;
+using StarBlog.Application.Criteria;
 
 namespace StarBlog.Api.Apis.Comments;
 

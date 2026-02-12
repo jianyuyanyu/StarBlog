@@ -1,7 +1,7 @@
 using IP2Region.Net.Abstractions;
 using IP2Region.Net.XDB;
 using StarBlog.Infrastructure.Ip;
-using StarBlog.Api.Services.VisitRecordServices;
+using StarBlog.Application.Services.VisitRecordServices;
 
 namespace StarBlog.Api.Extensions;
 

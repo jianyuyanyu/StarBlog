@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using SixLabors.ImageSharp.Web.DependencyInjection;
-using StarBlog.Api.Contrib.SiteMessage;
+using StarBlog.Application.Contrib.SiteMessage;
 using StarBlog.Api.Filters;
-using StarBlog.Api.Services;
-using StarBlog.Api.Services.OutboxServices;
+using StarBlog.Application.Services;
+using StarBlog.Application.Services.OutboxServices;
 using StarBlog.Data;
 using StarBlog.Data.Extensions;
 using StarBlog.Api.Extensions;

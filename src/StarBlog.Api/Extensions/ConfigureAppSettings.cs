@@ -1,5 +1,5 @@
 using StarBlog.Content.Utils;
-using StarBlog.Api.Models.Config;
+using StarBlog.Application.Models.Config;
 
 namespace StarBlog.Api.Extensions; 
 
