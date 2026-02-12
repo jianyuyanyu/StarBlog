@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlogImageOptimizer", "tools
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkdownImporter", "tools\MarkdownImporter\MarkdownImporter.csproj", "{C883C61D-CAF1-4487-9D49-005307E1269E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarBlog.BackupTool", "tools\Backup\StarBlog.BackupTool.csproj", "{5B3E7D0F-8A8D-4F9B-9B4E-EC9D9F877D76}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarBlog.BackupTool", "tools\StarBlogBackup\StarBlog.BackupTool.csproj", "{5B3E7D0F-8A8D-4F9B-9B4E-EC9D9F877D76}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarBlog.Content", "src\StarBlog.Content\StarBlog.Content.csproj", "{1C0E6E44-2F9C-422F-8794-37318F5C9F03}"
 EndProject
